@@ -9,6 +9,7 @@ from app.ml.jsma_eval import evaluate_jsma
 from app.monitoring.metrics import (
     fgsm_attack_count,
     jsma_attack_count,
+    pgd_attack_count,
     clean_accuracy,
     adversarial_accuracy
 )
@@ -26,6 +27,11 @@ model.eval()
 test_loader = get_test_loader()
 class FGSMRequest(BaseModel):
     epsilon: float
+
+class PGDRequest(BaseModel):
+    epsilon: float = 0.1
+    alpha: float = 0.01
+    steps: int = 40
 
 
 # -----------------------------
@@ -96,4 +102,40 @@ def jsma_multi_sample(theta: float = 0.4):
 
         # ✅ Correct perturbation metric
         "perturbed_features": avg_perturb
+    }
+
+# -----------------------------
+# PGD ATTACK
+# -----------------------------
+from app.ml.pgd_eval import evaluate_pgd
+
+@attack_router.post("/pgd")
+def pgd_multi_sample(req: PGDRequest):
+    clean_correct, adv_correct, total = evaluate_pgd(
+        model,
+        test_loader,
+        epsilon=req.epsilon,
+        alpha=req.alpha,
+        steps=req.steps,
+        max_samples=100
+    )
+
+    clean_acc = clean_correct / total
+    adv_acc = adv_correct / total
+
+    pgd_attack_count.inc()
+    clean_accuracy.set(clean_acc)
+    adversarial_accuracy.set(adv_acc)
+    drop = (clean_acc - adv_acc) / clean_acc
+
+    return {
+        "attack_type": "PGD",
+        "epsilon": req.epsilon,
+        "alpha": req.alpha,
+        "steps": req.steps,
+        "original_accuracy": round(clean_acc * 100, 1),
+        "adversarial_accuracy": round(adv_acc * 100, 1),
+        "accuracy_transition": f"{round(clean_acc*100,1)}% → {round(adv_acc*100,1)}%",
+        "relative_drop": round(drop * 100, 1),
+        "success_rate": round((clean_acc - adv_acc) * 100, 1)
     }

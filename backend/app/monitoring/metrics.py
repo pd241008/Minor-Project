@@ -11,6 +11,11 @@ jsma_attack_count = Counter(
     "Total number of JSMA attacks executed"
 )
 
+pgd_attack_count = Counter(
+    "pgd_attack_total",
+    "Total number of PGD attacks executed"
+)
+
 # Accuracy metrics
 clean_accuracy = Gauge(
     "model_clean_accuracy",

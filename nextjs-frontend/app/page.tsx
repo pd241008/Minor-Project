@@ -17,6 +17,7 @@ import "../styles/Dashboard.css";
 
 export default function Dashboard() {
   const [fgsm, setFgsm] = usePersistentState("fgsm", null);
+  const [pgd, setPgd] = usePersistentState("pgd", null);
   const [jsma, setJsma] = usePersistentState("jsma", null);
   const [defence, setDefence] = usePersistentState("defence", null);
   const [logs, setLogs] = usePersistentState<any[]>("logs", []);
@@ -38,7 +39,7 @@ export default function Dashboard() {
     ]);
   };
 
-  const hasResults = fgsm || jsma || defence;
+  const hasResults = fgsm || pgd || jsma || defence;
 
   return (
     <div className="dashboard-container">
@@ -75,6 +76,14 @@ export default function Dashboard() {
                 (data.original_accuracy - data.adversarial_accuracy).toFixed(3),
               );
             }}
+            setPgdGlobal={(data: any) => {
+              setPgd(data);
+              logEvent(
+                "PGD",
+                "Accuracy Drop",
+                (data.original_accuracy - data.adversarial_accuracy).toFixed(3),
+              );
+            }}
             setJsmaGlobal={(data: any) => {
               setJsma(data);
               logEvent("JSMA", "Confidence Drop", data.confidence_drop);
@@ -98,6 +107,7 @@ export default function Dashboard() {
             <div className="results-panel">
               <MetricsPanel
                 fgsm={fgsm}
+                pgd={pgd}
                 jsma={jsma}
                 defence={defence}
               />
@@ -124,6 +134,7 @@ export default function Dashboard() {
             <div className="export-container">
               <ExportResults
                 fgsm={fgsm}
+                pgd={pgd}
                 jsma={jsma}
                 defence={defence}
               />
