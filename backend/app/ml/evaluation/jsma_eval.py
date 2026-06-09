@@ -1,6 +1,6 @@
 import torch
 import torch.nn.functional as F
-from app.ml.jsma import jsma_attack
+from app.ml.attacks.jsma import jsma_attack
 
 
 def evaluate_jsma(model, data_loader, theta=0.4, max_samples=50):

@@ -1,7 +1,7 @@
 import torch
-from app.ml.evaluate import evaluate
-from app.ml.data import get_test_loader
-from app.ml.model import TabularMLP
+from app.ml.evaluation.base_eval import evaluate
+from app.ml.data.loader import get_test_loader
+from app.ml.models.architecture import TabularMLP
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

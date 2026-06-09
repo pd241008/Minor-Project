@@ -4,9 +4,9 @@ import torch.nn.functional as F
 from torch.optim import Adam
 import random
 
-from app.ml.model import TabularMLP
-from app.ml.data import get_train_loader
-from app.ml.fgsm import fgsm_attack
+from app.ml.models.architecture import TabularMLP
+from app.ml.data.loader import get_train_loader
+from app.ml.attacks.fgsm import fgsm_attack
 
 # Device
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")

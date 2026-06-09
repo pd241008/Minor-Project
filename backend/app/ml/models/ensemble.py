@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from app.ml.model import TabularMLP
+from app.ml.models.architecture import TabularMLP
 
 
 class EnsembleModel(nn.Module):
