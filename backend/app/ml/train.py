@@ -28,7 +28,7 @@ def train_model(epochs=5, lr=1e-3, save_path="app/ml/model.pth"):
         total_loss = 0
 
         for data, target in train_loader:
-            data, target = data.to(DEVICE), target.to(DEVICE)
+            data, target = data.to(DEVICE), target.long().view(-1).to(DEVICE)
 
             optimizer.zero_grad()
             output = model(data)
@@ -62,7 +62,7 @@ def adversarial_train(model, train_loader, epsilon=0.1, epochs=2, lr=1e-4):
         total_loss_epoch = 0
 
         for data, target in train_loader:
-            data, target = data.to(DEVICE), target.to(DEVICE)
+            data, target = data.to(DEVICE), target.long().view(-1).to(DEVICE)
 
             # CLEAN PASS
             output = model(data)
@@ -118,7 +118,7 @@ def train_multiple_models(num_models=3):
 
             for data, target in train_loader:
 
-                data, target = data.to(DEVICE), target.to(DEVICE)
+                data, target = data.to(DEVICE), target.long().view(-1).to(DEVICE)
 
                 # -----------------------------
                 # ✅ SAFE NOISE (CLAMPED)
@@ -126,9 +126,9 @@ def train_multiple_models(num_models=3):
                 noise = torch.randn_like(data) * (0.02 * (i + 1))
                 data_noisy = data + noise
 
-                # Clamp to normalized MNIST range
-                min_val = (0 - 0.1307) / 0.3081
-                max_val = (1 - 0.1307) / 0.3081
+                # Clamp to normalized Tabular Min-Max range
+                min_val = 0.0
+                max_val = 1.0
                 data_noisy = torch.clamp(data_noisy, min_val, max_val)
 
                 optimizer.zero_grad()

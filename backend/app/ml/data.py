@@ -22,6 +22,8 @@ def load_tabular_data(csv_path, samples=1000):
     """
     if os.path.exists(csv_path):
         # In a real scenario, pd.read_csv logic goes here.
+        # Example safe scaling:
+        # df[CONTINUOUS_COLS] = (df[CONTINUOUS_COLS] - df[CONTINUOUS_COLS].min()) / (df[CONTINUOUS_COLS].max() - df[CONTINUOUS_COLS].min() + 1e-8)
         pass
         
     # Synthetic generator strictly conforming to Min-Max [0, 1] and One-Hot bounds
@@ -34,6 +36,8 @@ def load_tabular_data(csv_path, samples=1000):
         x_data[:, group] = one_hot
         
     y_data = torch.randint(0, 2, (samples,))
+    
+    print(f"Label distribution for {csv_path}:", torch.bincount(y_data.long()))
     
     return TensorDataset(x_data, y_data)
 
