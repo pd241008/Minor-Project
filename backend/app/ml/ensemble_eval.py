@@ -29,9 +29,9 @@ def evaluate_ensemble(
         target = target.to(device)
 
         # CLEAN
-        output = model(data)
-
-        pred = output.argmax(dim=1)
+        with torch.no_grad():
+            output = model(data)
+            pred = output.argmax(dim=1)
 
         clean_correct += (
             pred == target
@@ -49,9 +49,9 @@ def evaluate_ensemble(
             epsilon
         )
 
-        adv_output = model(adv_data)
-
-        adv_pred = adv_output.argmax(dim=1)
+        with torch.no_grad():
+            adv_output = model(adv_data)
+            adv_pred = adv_output.argmax(dim=1)
 
         adv_correct += (
             adv_pred == target

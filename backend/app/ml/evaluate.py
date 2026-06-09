@@ -4,6 +4,7 @@
 import torch
 
 def evaluate(model, data_loader):
+    model.eval()
     correct = 0
     total = 0
 
