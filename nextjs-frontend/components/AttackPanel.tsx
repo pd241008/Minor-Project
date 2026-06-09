@@ -1,46 +1,43 @@
 "use client";
-
 import React, { useState } from "react";
-import { runFGSM, runJSMA } from "../services/api";
-import { FGSMResult, JSMAResult, PanelProps } from "../types";
-
-interface AttackPanelProps extends PanelProps {
-  setFgsmGlobal: (data: FGSMResult) => void;
-  setJsmaGlobal: (data: JSMAResult) => void;
-}
+import { post } from "../services/api";
 
 export default function AttackPanel({
   setFgsmGlobal,
   setJsmaGlobal,
   setEpsilonGlobal,
-  epsilonGlobal,
-  setIsLoading,
-  setLoadingMsg,
-}: AttackPanelProps) {
-  const [fgsm, setFgsm] = useState<FGSMResult | null>(null);
-  const [jsma, setJsma] = useState<JSMAResult | null>(null);
+  epsilonGlobal, // Using global epsilon for the slider
+  setIsLoading, // Controls the global blur overlay
+  setLoadingMsg, // Updates the text on the loader
+}: any) {
+  const [fgsm, setFgsm] = useState<any>(null);
+  const [jsma, setJsma] = useState<any>(null);
 
-  const runAttack = async (type: "fgsm" | "jsma") => {
+  const runAttack = async (type: string) => {
+    // Turn ON global loader
     setIsLoading(true);
     setLoadingMsg(
       type === "fgsm"
         ? "Generating FGSM Adversarial Examples..."
-        : "Computing JSMA Saliency Maps..."
+        : "Computing JSMA Saliency Maps...",
     );
 
     try {
+      let data;
+
       if (type === "fgsm") {
-        const data = await runFGSM(epsilonGlobal);
+        data = await post("/attack/fgsm", { epsilon: epsilonGlobal });
         setFgsm(data);
         setFgsmGlobal(data);
       } else {
-        const data = await runJSMA();
+        data = await post("/attack/jsma");
         setJsma(data);
         setJsmaGlobal(data);
       }
     } catch (error) {
       console.error("Attack failed:", error);
     } finally {
+      // Turn OFF global loader
       setIsLoading(false);
     }
   };
@@ -49,8 +46,9 @@ export default function AttackPanel({
     <div className="card">
       <h2>Adversarial Attacks</h2>
 
-      <div className="slider-container my-4">
-        <p className="mb-2">
+      {/* Epsilon Slider */}
+      <div className="slider-container">
+        <p>
           <b>FGSM Epsilon:</b> {epsilonGlobal}
         </p>
         <input
@@ -59,27 +57,33 @@ export default function AttackPanel({
           max="0.15"
           step="0.01"
           value={epsilonGlobal}
-          onChange={(e) => setEpsilonGlobal?.(parseFloat(e.target.value))}
-          className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+          onChange={(e) => {
+            const val = parseFloat(e.target.value);
+            setEpsilonGlobal(val);
+          }}
         />
-        <small className="text-gray-400 block mt-1">
-          Higher epsilon increases perturbation strength
-        </small>
+        <small>Higher epsilon increases perturbation strength</small>
       </div>
 
       <div className="button-group">
-        <button className="btn-attack" onClick={() => runAttack("fgsm")}>
+        <button
+          className="btn-attack"
+          onClick={() => runAttack("fgsm")}>
           Run FGSM
         </button>
 
-        <button className="btn-jsma" onClick={() => runAttack("jsma")}>
+        <button
+          className="btn-jsma"
+          onClick={() => runAttack("jsma")}>
           Run JSMA
         </button>
       </div>
 
       {fgsm && (
-        <div className="result animate-fadeIn">
-          <p><b>FGSM Result</b></p>
+        <div className="result">
+          <p>
+            <b>FGSM Result</b>
+          </p>
           <p>Original Accuracy: {fgsm.original_accuracy}</p>
           <p>Adversarial Accuracy: {fgsm.adversarial_accuracy}</p>
           <p>Epsilon: {fgsm.epsilon}</p>
@@ -87,8 +91,10 @@ export default function AttackPanel({
       )}
 
       {jsma && (
-        <div className="result animate-fadeIn">
-          <p><b>JSMA Result</b></p>
+        <div className="result">
+          <p>
+            <b>JSMA Result</b>
+          </p>
           <p>Perturbed Features: {jsma.perturbed_features}</p>
           <p>Confidence Drop: {jsma.confidence_drop}</p>
         </div>

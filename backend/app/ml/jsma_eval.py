@@ -12,7 +12,9 @@ def evaluate_jsma(model, data_loader, theta=0.4, max_samples=50):
     perturbed_features = []
     confidence_drop = 0
 
+    device = next(model.parameters()).device
     for data, target in data_loader:
+        data, target = data.to(device), target.to(device)
 
         if total >= max_samples:
             break

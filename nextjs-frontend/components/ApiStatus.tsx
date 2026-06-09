@@ -1,33 +1,31 @@
 "use client";
+// ApiStatus.jsx (UPDATED)
+// location: frontend/src/components/ApiStatus.jsx
 
 import React, { useEffect, useState } from "react";
 
 export default function ApiStatus() {
-  const [status, setStatus] = useState<"online" | "offline" | "checking">("checking");
+  const [status, setStatus] = useState("checking");
 
   useEffect(() => {
-    const checkStatus = async () => {
-      try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
-        const res = await fetch(`${baseUrl}/health`);
-        if (!res.ok) throw new Error();
-        setStatus("online");
-      } catch {
-        setStatus("offline");
-      }
-    };
-    checkStatus();
+    fetch("http://127.0.0.1:8000/health")
+      .then((res) => {
+        if (!res.ok) throw new Error("Backend not reachable");
+        return res.json();
+      })
+      .then(() => setStatus("online"))
+      .catch(() => setStatus("offline"));
   }, []);
 
   return (
     <div className="card">
-      <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Backend Status</h2>
-      <div className="flex items-center gap-2">
-        <div className={`w-3 h-3 rounded-full ${status === 'online' ? 'bg-green-500 shadow-[0_0_10px_#22c55e]' : status === 'offline' ? 'bg-red-500' : 'bg-yellow-500 animate-pulse'}`}></div>
-        <p className="font-bold">
-          {status === 'checking' ? 'CHECKING...' : status.toUpperCase()}
-        </p>
-      </div>
+      <h2>Backend Status</h2>
+      <p>
+        Status:{" "}
+        <b style={{ color: status === "online" ? "#22c55e" : "#ef4444" }}>
+          {status.toUpperCase()}
+        </b>
+      </p>
     </div>
   );
 }

@@ -9,7 +9,9 @@ def evaluate_fgsm(model, data_loader, epsilon=0.1, max_samples=100):
     adv_correct = 0
     total = 0
 
+    device = next(model.parameters()).device
     for data, target in data_loader:
+        data, target = data.to(device), target.to(device)
         if total >= max_samples:
             break
 

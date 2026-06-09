@@ -1,15 +1,7 @@
 "use client";
-
 import React from "react";
-import { FGSMResult, JSMAResult, DefenceResult } from "../types";
 
-interface ExportResultsProps {
-  fgsm: FGSMResult | null;
-  jsma: JSMAResult | null;
-  defence: DefenceResult | null;
-}
-
-export default function ExportResults({ fgsm, jsma, defence }: ExportResultsProps) {
+export default function ExportResults({ fgsm, jsma, defence }: any) {
   const exportCSV = () => {
     const rows = [
       ["Metric", "Value"],
@@ -17,7 +9,10 @@ export default function ExportResults({ fgsm, jsma, defence }: ExportResultsProp
         ? [
             ["FGSM Original Accuracy", fgsm.original_accuracy],
             ["FGSM Adversarial Accuracy", fgsm.adversarial_accuracy],
-            ["FGSM Accuracy Drop", fgsm.original_accuracy - fgsm.adversarial_accuracy],
+            [
+              "FGSM Accuracy Drop",
+              fgsm.original_accuracy - fgsm.adversarial_accuracy,
+            ],
           ]
         : []),
       ...(jsma
@@ -50,7 +45,7 @@ export default function ExportResults({ fgsm, jsma, defence }: ExportResultsProp
     <div className="card">
       <h2>Export Results</h2>
       <button
-        className="btn-ensemble w-full"
+        className="btn-ensemble"
         onClick={exportCSV}
         disabled={!fgsm && !jsma && !defence}
       >

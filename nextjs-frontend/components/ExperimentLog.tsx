@@ -1,40 +1,44 @@
+"use client";
 import React from "react";
-import { LogEntry } from "../types";
 
-interface ExperimentLogProps {
-  logs: LogEntry[];
-}
-
-export default function ExperimentLog({ logs }: ExperimentLogProps) {
+export default function ExperimentLog({ logs }: any) {
   return (
-    <div className="card h-full overflow-hidden flex flex-col">
-      <h2 className="mb-4">Experiment Log</h2>
+    <div className="card">
+      <h2>Experiment Log</h2>
 
-      {logs.length === 0 ? (
-        <p className="text-gray-500 italic">No experiments logged yet</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-sm">
-            <thead>
-              <tr className="border-bottom border-gray-700">
-                <th className="pb-2 text-gray-400 font-medium">Type</th>
-                <th className="pb-2 text-gray-400 font-medium">Metric</th>
-                <th className="pb-2 text-gray-400 font-medium">Value</th>
-                <th className="pb-2 text-gray-400 font-medium">Timestamp</th>
+      {logs.length === 0 && (
+        <p style={{ color: "#9ca3af" }}>
+          No experiments logged yet
+        </p>
+      )}
+
+      {logs.length > 0 && (
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            fontSize: "0.9rem",
+          }}
+        >
+          <thead>
+            <tr style={{ borderBottom: "1px solid #334155" }}>
+              <th align="left">Type</th>
+              <th align="left">Metric</th>
+              <th align="left">Value</th>
+              <th align="left">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            {logs.map((log: any, idx: number) => (
+              <tr key={idx} style={{ borderBottom: "1px solid #1e293b" }}>
+                <td>{log.type}</td>
+                <td>{log.metric}</td>
+                <td>{log.value}</td>
+                <td>{log.time}</td>
               </tr>
-            </thead>
-            <tbody>
-              {logs.map((log, idx) => (
-                <tr key={idx} className="border-t border-gray-800/50 hover:bg-white/5 transition-colors">
-                  <td className="py-2">{log.type}</td>
-                  <td className="py-2">{log.metric}</td>
-                  <td className="py-2 text-cyan-400 font-mono">{log.value}</td>
-                  <td className="py-2 text-gray-500">{log.time}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );

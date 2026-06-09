@@ -1,19 +1,14 @@
+"use client";
+// MetricsPanel.jsx
 import React from "react";
-import { FGSMResult, JSMAResult, DefenceResult } from "../types";
 
-interface MetricsPanelProps {
-  fgsm: FGSMResult | null;
-  jsma: JSMAResult | null;
-  defence: DefenceResult | null;
-}
-
-export default function MetricsPanel({ fgsm, jsma, defence }: MetricsPanelProps) {
+export default function MetricsPanel({ fgsm, jsma, defence }: any) {
   return (
     <div className="card">
       <h2>Model Robustness Metrics</h2>
 
       {!fgsm && !jsma && !defence && (
-        <p className="text-gray-500 italic">
+        <p style={{ color: "#9ca3af" }}>
           Run an attack or defence to see metrics
         </p>
       )}
