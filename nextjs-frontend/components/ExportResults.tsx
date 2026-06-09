@@ -42,15 +42,12 @@ export default function ExportResults({ fgsm, jsma, defence }: any) {
   };
 
   return (
-    <div className="card">
-      <h2>Export Results</h2>
-      <button
-        className="btn-ensemble"
-        onClick={exportCSV}
-        disabled={!fgsm && !jsma && !defence}
-      >
-        Download Results (CSV)
-      </button>
-    </div>
+    <button
+      className="py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all hover:-translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed"
+      onClick={exportCSV}
+      disabled={!fgsm && !jsma && !defence}
+    >
+      Download Results (CSV)
+    </button>
   );
 }

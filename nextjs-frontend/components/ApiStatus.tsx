@@ -18,14 +18,11 @@ export default function ApiStatus() {
   }, []);
 
   return (
-    <div className="card">
-      <h2>Backend Status</h2>
-      <p>
-        Status:{" "}
-        <b style={{ color: status === "online" ? "#22c55e" : "#ef4444" }}>
-          {status.toUpperCase()}
-        </b>
-      </p>
+    <div className="flex items-center gap-2">
+      <span className="font-semibold text-slate-200">Backend Status:</span>
+      <b className={`${status === "online" ? "text-green-500" : "text-red-500"}`}>
+        {status.toUpperCase()}
+      </b>
     </div>
   );
 }

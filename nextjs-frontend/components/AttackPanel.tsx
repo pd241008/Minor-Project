@@ -11,10 +11,7 @@ export default function AttackPanel({
   setIsLoading,
   setLoadingMsg,
 }: any) {
-  const [fgsm, setFgsm] = useState<any>(null);
-  const [jsma, setJsma] = useState<any>(null);
-  const [pgd, setPgd] = useState<any>(null);
-  
+
   const [attackType, setAttackType] = useState("fgsm");
   const [alpha, setAlpha] = useState(0.01);
   const [steps, setSteps] = useState(40);
@@ -31,15 +28,12 @@ export default function AttackPanel({
       let data;
       if (type === "fgsm") {
         data = await post("/attack/fgsm", { epsilon: epsilonGlobal });
-        setFgsm(data);
         setFgsmGlobal(data);
       } else if (type === "pgd") {
         data = await post("/attack/pgd", { epsilon: epsilonGlobal, alpha, steps });
-        setPgd(data);
         setPgdGlobal(data);
       } else {
         data = await post("/attack/jsma");
-        setJsma(data);
         setJsmaGlobal(data);
       }
     } catch (error) {
@@ -50,15 +44,15 @@ export default function AttackPanel({
   };
 
   return (
-    <div className="card">
-      <h2>Attack Parameters</h2>
+    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-md">
+      <h2 className="text-xl font-bold mb-4">Attack Parameters</h2>
       
-      <div style={{ marginBottom: "1.5rem" }}>
-        <label><b>Select Attack: </b></label>
+      <div className="mb-6">
+        <label className="font-semibold text-slate-200">Select Attack: </label>
         <select 
           value={attackType} 
           onChange={(e) => setAttackType(e.target.value)}
-          style={{ marginLeft: "10px", padding: "8px", borderRadius: "6px", border: "1px solid #444", background: "#111", color: "white" }}
+          className="ml-2.5 p-2 rounded-md border border-slate-700 bg-slate-950 text-white outline-none focus:border-slate-500"
         >
           <option value="fgsm">FGSM (Fast Gradient Sign)</option>
           <option value="pgd">PGD (Projected Gradient Descent)</option>
@@ -67,42 +61,42 @@ export default function AttackPanel({
       </div>
 
       {(attackType === "fgsm" || attackType === "pgd") && (
-        <div className="slider-container" style={{ marginBottom: "1rem" }}>
-          <p><b>Epsilon:</b> {epsilonGlobal}</p>
+        <div className="mb-4 flex flex-col gap-1">
+          <p className="font-semibold text-slate-200">Epsilon: <span className="font-normal">{epsilonGlobal}</span></p>
           <input
             type="range" min="0.05" max="0.15" step="0.01" value={epsilonGlobal}
             onChange={(e) => setEpsilonGlobal(parseFloat(e.target.value))}
+            className="w-full accent-red-500"
           />
-          <small>Higher epsilon increases perturbation strength</small>
+          <small className="text-slate-400 text-xs mt-1">Higher epsilon increases perturbation strength</small>
         </div>
       )}
 
       {attackType === "pgd" && (
         <>
-          <div className="slider-container" style={{ marginBottom: "1rem" }}>
-            <p><b>Alpha (Step Size):</b> {alpha}</p>
+          <div className="mb-4 flex items-center justify-between">
+            <p className="font-semibold text-slate-200">Alpha (Step Size):</p>
             <input
               type="number" min="0.001" max="0.05" step="0.001" value={alpha}
               onChange={(e) => setAlpha(parseFloat(e.target.value))}
-              style={{ padding: "5px", borderRadius: "4px", background: "#222", border: "1px solid #444", color: "white", width: "100px" }}
+              className="p-1.5 rounded-md bg-slate-950 border border-slate-700 text-white w-24 outline-none focus:border-slate-500"
             />
           </div>
-          <div className="slider-container" style={{ marginBottom: "1rem" }}>
-            <p><b>Iterations:</b> {steps}</p>
+          <div className="mb-4 flex items-center justify-between">
+            <p className="font-semibold text-slate-200">Iterations:</p>
             <input
               type="number" min="10" max="100" step="10" value={steps}
               onChange={(e) => setSteps(parseInt(e.target.value))}
-              style={{ padding: "5px", borderRadius: "4px", background: "#222", border: "1px solid #444", color: "white", width: "100px" }}
+              className="p-1.5 rounded-md bg-slate-950 border border-slate-700 text-white w-24 outline-none focus:border-slate-500"
             />
           </div>
         </>
       )}
 
-      <div className="button-group" style={{ marginTop: "1.5rem" }}>
+      <div className="mt-6">
         <button
-          className={attackType === "jsma" ? "btn-jsma" : "btn-attack"}
+          className={`w-full py-2.5 px-4 rounded-lg font-medium transition-all hover:-translate-y-[1px] hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed text-white ${attackType === "jsma" ? "bg-orange-500" : "bg-red-600"}`}
           onClick={() => runAttack(attackType)}
-          style={{ width: "100%" }}
         >
           Run {attackType.toUpperCase()}
         </button>

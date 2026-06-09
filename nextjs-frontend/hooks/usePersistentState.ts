@@ -9,6 +9,7 @@ export default function usePersistentState<T>(key: string, initialValue: T): [T,
     try {
       const saved = localStorage.getItem(key);
       if (saved) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setState(JSON.parse(saved));
       }
     } catch (e) {

@@ -7,9 +7,9 @@ import React from "react";
 export default function RunComparison({ runs }: any) {
   if (runs.length === 0) {
     return (
-      <div className="card">
-        <h2>Run Comparison</h2>
-        <p style={{ color: "#9ca3af" }}>No runs available for comparison</p>
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-md h-full">
+        <h2 className="text-xl font-bold mb-4">Run Comparison</h2>
+        <p className="text-slate-400">No runs available for comparison</p>
       </div>
     );
   }
@@ -26,12 +26,12 @@ export default function RunComparison({ runs }: any) {
     .map((r: any) => parseFloat(r.value));
 
   return (
-    <div className="card">
-      <h2>Run Comparison Summary</h2>
+    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-md h-full">
+      <h2 className="text-xl font-bold mb-4">Run Comparison Summary</h2>
 
       {fgsmDrops.length > 0 && (
-        <div className="result">
-          <p><b>FGSM Accuracy Drop</b></p>
+        <div className="bg-slate-950 border border-slate-800 rounded-lg p-4 mt-3 text-sm text-slate-300">
+          <b className="text-slate-50 text-base mb-2 block">FGSM Accuracy Drop</b>
           <p>Average: {avg(fgsmDrops)}</p>
           <p>Best (Min): {Math.min(...fgsmDrops)}</p>
           <p>Worst (Max): {Math.max(...fgsmDrops)}</p>
@@ -39,8 +39,8 @@ export default function RunComparison({ runs }: any) {
       )}
 
       {defenceAcc.length > 0 && (
-        <div className="result">
-          <p><b>Defence Robust Accuracy</b></p>
+        <div className="bg-slate-950 border border-slate-800 rounded-lg p-4 mt-3 text-sm text-slate-300">
+          <b className="text-slate-50 text-base mb-2 block">Defence Robust Accuracy</b>
           <p>Average: {avg(defenceAcc)}</p>
           <p>Best: {Math.max(...defenceAcc)}</p>
           <p>Worst: {Math.min(...defenceAcc)}</p>

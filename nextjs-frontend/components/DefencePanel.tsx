@@ -35,27 +35,27 @@ export default function DefencePanel({
   };
 
   return (
-    <div className="card">
-      <h2>Defence Mechanisms</h2>
+    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-md">
+      <h2 className="text-xl font-bold mb-4">Defence Mechanisms</h2>
 
-      <div className="button-group">
+      <div className="flex gap-3 mb-4">
         <button
-          className="btn-defence"
+          className="flex-1 py-2.5 px-4 rounded-lg font-medium transition-all hover:-translate-y-[1px] hover:opacity-90 bg-green-600 text-white"
           onClick={() => applyDefence("adversarial-training")}>
           Adversarial Training
         </button>
 
         <button
-          className="btn-ensemble"
+          className="flex-1 py-2.5 px-4 rounded-lg font-medium transition-all hover:-translate-y-[1px] hover:opacity-90 bg-emerald-500 text-white"
           onClick={() => applyDefence("ensemble")}>
           Ensemble Defence
         </button>
       </div>
 
       {result && (
-        <div className="result">
+        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3 mt-3 text-sm text-slate-300">
           <p>
-            <b>{result.defence_method}</b>
+            <b className="text-slate-50">{result.defence_method}</b>
           </p>
           <p>Robust Accuracy: {result.robust_accuracy}</p>
           <p>Status: {result.status}</p>

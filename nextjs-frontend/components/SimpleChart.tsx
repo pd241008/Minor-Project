@@ -41,9 +41,9 @@ export default function SimpleChart({ fgsm, defence }: any) {
   }, [fgsm, defence]);
 
   return (
-    <div className="card">
-      <h2>Accuracy Comparison</h2>
-      <canvas ref={canvasRef} width="420" height="320" />
+    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-md flex flex-col items-center">
+      <h2 className="text-xl font-bold mb-4 self-start">Accuracy Comparison</h2>
+      <canvas ref={canvasRef} width="420" height="320" className="bg-slate-950 border border-slate-700 rounded-xl mt-3 md:w-auto w-full h-auto" />
     </div>
   );
 }

@@ -3,38 +3,32 @@ import React from "react";
 
 export default function ExperimentLog({ logs }: any) {
   return (
-    <div className="card">
-      <h2>Experiment Log</h2>
+    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-md h-full">
+      <h2 className="text-xl font-bold mb-4">Experiment Log</h2>
 
       {logs.length === 0 && (
-        <p style={{ color: "#9ca3af" }}>
+        <p className="text-slate-400">
           No experiments logged yet
         </p>
       )}
 
       {logs.length > 0 && (
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            fontSize: "0.9rem",
-          }}
-        >
+        <table className="w-full border-collapse text-sm text-left">
           <thead>
-            <tr style={{ borderBottom: "1px solid #334155" }}>
-              <th align="left">Type</th>
-              <th align="left">Metric</th>
-              <th align="left">Value</th>
-              <th align="left">Timestamp</th>
+            <tr className="border-b border-slate-700">
+              <th className="py-2 font-semibold text-slate-300">Type</th>
+              <th className="py-2 font-semibold text-slate-300">Metric</th>
+              <th className="py-2 font-semibold text-slate-300">Value</th>
+              <th className="py-2 font-semibold text-slate-300">Timestamp</th>
             </tr>
           </thead>
           <tbody>
             {logs.map((log: any, idx: number) => (
-              <tr key={idx} style={{ borderBottom: "1px solid #1e293b" }}>
-                <td>{log.type}</td>
-                <td>{log.metric}</td>
-                <td>{log.value}</td>
-                <td>{log.time}</td>
+              <tr key={idx} className="border-b border-slate-800 last:border-0 hover:bg-slate-800/50 transition-colors">
+                <td className="py-2 text-slate-300">{log.type}</td>
+                <td className="py-2 text-slate-300">{log.metric}</td>
+                <td className="py-2 font-medium text-slate-50">{log.value}</td>
+                <td className="py-2 text-slate-400 text-xs">{log.time}</td>
               </tr>
             ))}
           </tbody>

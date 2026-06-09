@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <main className="container">
+        <main className="max-w-[1100px] mx-auto py-10 px-5">
           {children}
         </main>
       </body>
