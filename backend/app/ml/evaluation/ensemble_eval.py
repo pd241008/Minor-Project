@@ -1,5 +1,5 @@
 import torch
-from app.ml.fgsm import fgsm_attack
+from app.ml.attacks.fgsm import fgsm_attack
 
 
 def evaluate_ensemble(

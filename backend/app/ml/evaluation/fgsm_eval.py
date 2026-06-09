@@ -2,7 +2,7 @@
 # FGSM Evaluation over Multiple Samples
 
 import torch
-from app.ml.fgsm import fgsm_attack
+from app.ml.attacks.fgsm import fgsm_attack
 
 def evaluate_fgsm(model, data_loader, epsilon=0.1, max_samples=100):
     model.eval()

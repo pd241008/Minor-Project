@@ -1,5 +1,5 @@
 import torch
-from app.ml.model import TabularMLP
+from app.ml.models.architecture import TabularMLP
 
 def init_dummy_weights():
     model = TabularMLP()

@@ -1,5 +1,5 @@
 import torch
-from app.ml.pgd import pgd_attack
+from app.ml.attacks.pgd import pgd_attack
 
 def evaluate_pgd(model, data_loader, epsilon=0.1, alpha=0.01, steps=40, max_samples=100, continuous_cols=None, categorical_groups=None):
     model.eval()

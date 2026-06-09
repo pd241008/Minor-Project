@@ -1,5 +1,5 @@
 import numpy as np
-from app.ml.fgsm_eval import evaluate_fgsm
+from app.ml.evaluation.fgsm_eval import evaluate_fgsm
 
 def robustness_curve(model, data_loader, epsilons):
     results = []
