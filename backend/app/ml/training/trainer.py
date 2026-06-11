@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -17,6 +18,13 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # =====================================================
 def train_model(epochs=50, lr=1e-3, save_path="app/ml/model.pth"):
     model = TabularMLP().to(DEVICE)
+    
+    if os.path.exists(save_path):
+        print(f"✅ Found pretrained model at {save_path}. Loading it instead of training.")
+        model.load_state_dict(torch.load(save_path, map_location=DEVICE))
+        model.eval()
+        return model
+
     train_loader = get_train_loader()
 
     optimizer = Adam(model.parameters(), lr=lr)
@@ -51,7 +59,13 @@ def train_model(epochs=50, lr=1e-3, save_path="app/ml/model.pth"):
 # =====================================================
 # ✅ ADVERSARIAL TRAINING (FAST + STABLE)
 # =====================================================
-def adversarial_train(model, train_loader, epsilon=0.1, epochs=50, lr=1e-3):
+def adversarial_train(model, train_loader, epsilon=0.1, epochs=50, lr=1e-3, save_path="app/ml/model_adv.pth"):
+    
+    if os.path.exists(save_path):
+        print(f"✅ Found pretrained adversarial model at {save_path}. Loading it instead of training.")
+        model.load_state_dict(torch.load(save_path, map_location=DEVICE))
+        model.eval()
+        return model
 
     model = model.to(DEVICE)
     optimizer = Adam(model.parameters(), lr=lr)
@@ -61,6 +75,10 @@ def adversarial_train(model, train_loader, epsilon=0.1, epochs=50, lr=1e-3):
     for epoch in range(epochs):
         total_loss_epoch = 0
 
+        # Dynamic Perturbation Scheduling (Epsilon Scaling)
+        # Start at 0.02 and scale up to full epsilon by epoch 10
+        current_epsilon = min(epsilon, 0.02 + (epsilon - 0.02) * (epoch / 10.0)) if epochs >= 10 else epsilon
+
         for data, target in train_loader:
             data, target = data.to(DEVICE), target.long().view(-1).to(DEVICE)
 
@@ -68,8 +86,8 @@ def adversarial_train(model, train_loader, epsilon=0.1, epochs=50, lr=1e-3):
             output = model(data)
             loss_clean = F.cross_entropy(output, target)
 
-            # ADVERSARIAL EXAMPLES
-            adv_data = fgsm_attack(model, data, target, epsilon)
+            # ADVERSARIAL EXAMPLES (using dynamically scaled epsilon)
+            adv_data = fgsm_attack(model, data, target, current_epsilon)
 
             # ADVERSARIAL PASS
             adv_output = model(adv_data)
@@ -87,6 +105,9 @@ def adversarial_train(model, train_loader, epsilon=0.1, epochs=50, lr=1e-3):
         avg_loss = total_loss_epoch / len(train_loader)
         print(f"[Adv Train] Epoch {epoch+1}: Avg Loss = {avg_loss:.4f}")
 
+    torch.save(model.state_dict(), save_path)
+    print(f"✅ Adversarial Model saved at {save_path}")
+
     model.eval()
     return model
 
@@ -94,11 +115,16 @@ def adversarial_train(model, train_loader, epsilon=0.1, epochs=50, lr=1e-3):
 # =====================================================
 # 🚀 TRUE ENSEMBLE TRAINING (FIXED PROPERLY)
 # =====================================================
-def train_multiple_models(num_models=3):
+def train_multiple_models(num_models=3, epochs=20):
 
     for i in range(num_models):
 
         print(f"\n🚀 Training model {i+1}")
+        
+        save_path = f"app/ml/model_{i}.pth"
+        if os.path.exists(save_path):
+            print(f"✅ Found pretrained ensemble model at {save_path}. Skipping training.")
+            continue
 
         # ✅ Different seeds
         torch.manual_seed(42 + i)
@@ -113,7 +139,7 @@ def train_multiple_models(num_models=3):
 
         model.train()
 
-        for epoch in range(50):
+        for epoch in range(epochs):
             total_loss = 0
 
             for data, target in train_loader:
@@ -147,7 +173,6 @@ def train_multiple_models(num_models=3):
         # -----------------------------
         # ✅ SAVE MODEL
         # -----------------------------
-        save_path = f"app/ml/model_{i}.pth"
         torch.save(model.state_dict(), save_path)
 
         print(f"✅ Saved: {save_path}")
